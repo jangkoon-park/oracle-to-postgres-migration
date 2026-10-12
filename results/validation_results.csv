@@ -1,0 +1,29 @@
+check_no,category,check_name,source_value,target_value,detail,status
+1,ROW COUNT,site,60,60,diff 0,PASS
+2,ROW COUNT,contract_hdr,2008,2008,diff 0,PASS
+3,ROW COUNT,contract_dtl,29269,29269,diff 0,PASS
+4,ROW COUNT,purchase_order,13115,13115,diff 0,PASS
+5,ROW COUNT,budget,1814,1814,diff 0,PASS
+6,SITE TOTALS,Contract amount (header total_amount),"1,887,465,771,726.00","1,887,465,771,726.00",0 of 60 sites differ,PASS
+7,SITE TOTALS,Contract line amount (detail amount),"1,887,465,771,726.00","1,887,465,771,726.00",0 of 60 sites differ,PASS
+8,SITE TOTALS,Purchase order amount,"1,505,117,357,220.00","1,505,117,357,220.00",0 of 60 sites differ,PASS
+9,SITE TOTALS,Budget amount (original),"2,385,370,000,000.00","2,385,370,000,000.00",0 of 60 sites differ,PASS
+10,SITE TOTALS,"Budget amount (effective = NVL(revised, original))","2,423,768,200,000.00","2,423,768,200,000.00",0 of 60 sites differ,PASS
+11,ROW DIFF,site (all columns),0 only in source,0 only in target,EXCEPT ALL in both directions,PASS
+12,ROW DIFF,contract_hdr (all columns),0 only in source,0 only in target,EXCEPT ALL in both directions,PASS
+13,ROW DIFF,contract_dtl (all columns),0 only in source,0 only in target,EXCEPT ALL in both directions,PASS
+14,ROW DIFF,purchase_order (all columns),0 only in source,0 only in target,EXCEPT ALL in both directions,PASS
+15,ROW DIFF,budget (all columns),0 only in source,0 only in target,EXCEPT ALL in both directions,PASS
+16,SEMANTICS,NULL count: contract_dtl.spec + contract_hdr.remarks + purchase_order.remarks,20562,20562,Oracle NULLs must stay NULL,PASS
+17,SEMANTICS,Empty strings ('') in target text columns,0 (impossible in Oracle),0,"Oracle cannot store '', so none may appear",PASS
+18,SEMANTICS,"Y/N -> boolean (urgent_yn=Y vs is_urgent, approved_yn=Y vs is_approved)",2808,2808,count of Y / true,PASS
+19,SEMANTICS,Identity erp.site.site_id restarts after Oracle SITE_SEQ,LAST_NUMBER 61,next 61,max(id) 60,PASS
+20,SEMANTICS,Identity erp.contract_hdr.contract_id restarts after Oracle CONTRACT_SEQ,LAST_NUMBER 2028,next 2028,max(id) 2008,PASS
+21,SEMANTICS,Identity erp.purchase_order.po_id restarts after Oracle PO_SEQ,LAST_NUMBER 13135,next 13135,max(id) 13115,PASS
+22,SEMANTICS,Identity erp.budget.budget_id restarts after Oracle BUDGET_SEQ,LAST_NUMBER 1834,next 1834,max(id) 1814,PASS
+23,PL/pgSQL,fn_contract_total() for every contract,2008 contracts,0 mismatches,"vs NVL(SUM(amount),0) on source",PASS
+24,PL/pgSQL,fn_budget_usage_rate() for every site x fiscal year,226 site-years,0 mismatches,incl. years with PO but no budget (NULLIF -> NULL),PASS
+25,PL/pgSQL,pr_site_summary() OUT params for every site,60 sites,0 mismatches,contract / PO / effective budget,PASS
+26,PL/pgSQL,fn_top_vendor() (ROWNUM -> LIMIT) for every site,60 sites,0 mismatches,binary (NLS_SORT=BINARY) tie-break,PASS
+27,PL/pgSQL,fn_contract_label() (Oracle || NULL semantics),2008 contracts,0 mismatches,1301 have NULL remarks,PASS
+28,PL/pgSQL,"fn_status_name() (DECODE -> CASE, incl. NULL)",6 inputs,0 mismatches,DECODE matches NULL = NULL,PASS
