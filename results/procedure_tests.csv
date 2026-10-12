@@ -1,0 +1,10 @@
+test_no,test_name,expected,actual,status
+1,pr_recalc_contract_total: total & 10% VAT rebuilt from lines,1953803375.00 / 195380338.00,1953803375.00 / 195380338.00,PASS
+2,pr_recalc_contract_total: unknown id raises CT010 (ORA-20010),CT010,CT010,PASS
+3,pr_change_contract_status: DRAFT -> APPROVED,APPROVED,APPROVED,PASS
+4,"pr_change_contract_status: approve empty contract -> CT021, still DRAFT",CT021 / DRAFT,CT021 / DRAFT,PASS
+5,pr_change_contract_status: CLOSED -> APPROVED raises CT020,CT020,CT020,PASS
+6,pr_change_contract_status: cancel cascades to ISSUED POs,0 ISSUED POs left,0 ISSUED POs left,PASS
+7,NVL2/|| : NULL remarks + reason keeps the reason text, [CANCELLED] Client withdrew, [CANCELLED] Client withdrew,PASS
+8,Empty-string reason treated as NULL (remarks unchanged),Payment terms 30 days,Payment terms 30 days,PASS
+9,IDENTITY: first new contract_id = Oracle CONTRACT_SEQ.LAST_NUMBER,2028,2028,PASS

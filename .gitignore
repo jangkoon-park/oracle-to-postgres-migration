@@ -218,3 +218,6 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# generated fictional CSV (re-create with: python3 data/generate_data.py)
+data/csv/

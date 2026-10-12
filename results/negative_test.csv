@@ -1,0 +1,11 @@
+check_no,category,check_name,source_value,target_value,detail,status
+4,ROW COUNT,purchase_order,13115,13114,diff -1,FAIL
+7,SITE TOTALS,Contract line amount (detail amount),"1,887,465,771,726.00","1,887,465,771,726.01",1 of 60 sites differ,FAIL
+8,SITE TOTALS,Purchase order amount,"1,505,117,357,220.00","1,505,089,557,220.00",1 of 60 sites differ,FAIL
+13,ROW DIFF,contract_dtl (all columns),2 only in source,2 only in target,EXCEPT ALL in both directions,FAIL
+14,ROW DIFF,purchase_order (all columns),1 only in source,0 only in target,EXCEPT ALL in both directions,FAIL
+16,SEMANTICS,NULL count: contract_dtl.spec + contract_hdr.remarks + purchase_order.remarks,20562,20560,Oracle NULLs must stay NULL,FAIL
+17,SEMANTICS,Empty strings ('') in target text columns,0 (impossible in Oracle),1,"Oracle cannot store '', so none may appear",FAIL
+23,PL/pgSQL,fn_contract_total() for every contract,2008 contracts,1 mismatches,"vs NVL(SUM(amount),0) on source",FAIL
+24,PL/pgSQL,fn_budget_usage_rate() for every site x fiscal year,226 site-years,1 mismatches,incl. years with PO but no budget (NULLIF -> NULL),FAIL
+25,PL/pgSQL,pr_site_summary() OUT params for every site,60 sites,1 mismatches,contract / PO / effective budget,FAIL
